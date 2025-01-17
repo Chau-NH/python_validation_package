@@ -1,2 +1,6 @@
 venv
 dist
+.pypirc
+
+__pycache__/
+*.py[cod]

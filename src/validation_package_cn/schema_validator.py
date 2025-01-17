@@ -1,28 +1,29 @@
 from .exceptions import ValidationError
 from .validator import Validator
 
+validators = {
+    "required": lambda value, rule: Validator.validate_required(value),
+    "type": lambda value, rule: Validator.validate_type(value, rule),
+    "min": lambda value, rule: Validator.validate_range(value, min_value=rule),
+    "max": lambda value, rule: Validator.validate_range(value, max_value=rule),
+    "min_length": lambda value, rule: Validator.validate_length(value, min_length=rule),
+    "max_length": lambda value, rule: Validator.validate_length(value, max_length=rule),
+    "choices": lambda value, rule: Validator.validate_choices(value, rule),
+    "pattern": lambda value, rule: Validator.validate_pattern(value, rule),
+    "uploaded_file": lambda value, rule: Validator.validate_uploaded_file(value, **rule),
+}
 class SchemaValidator:
     def __init__(self, schema):
         self.schema = schema
 
     def validate(self, data):
         errors = {}
-
         for field, rules in self.schema.items():
             value = data.get(field)
             try:
-                if rules.get("required", False):
-                    Validator.validate_required(field, value)
-                if "type" in rules:
-                    Validator.validate_type(field, value, rules["type"])
-                if "range" in rules:
-                    Validator.validate_range(field, value, *rules["range"])
-                if "length" in rules:
-                    Validator.validate_length(field, value, *rules["length"])
-                if "choices" in rules:
-                    Validator.validate_choices(field, value, rules["choices"])
-                if "pattern" in rules:
-                    Validator.validate_pattern(field, value, rules["pattern"])
+                for rule_name, rule_value in rules.items():
+                    if rule_name in validators:
+                        validators[rule_name](value, rule_value)
 
             except ValidationError as e:
                 errors[field] = str(e)
