@@ -1,2 +1,2 @@
 from .schema_validator import *
-from .exceptions import *
+from .validation_exception import *
