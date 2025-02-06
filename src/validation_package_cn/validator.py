@@ -6,7 +6,10 @@ class Validator:
         if hasattr(validations, method_name):
             rule_value = rule[1]
             method = getattr(validations, method_name)
-            method(value, rule_value)
+            if isinstance(rule_value, dict):
+                method(value, **rule_value)
+            else:
+                method(value, rule_value)
         else:
             raise AttributeError(f"Method {method_name} not found in validators module")
         

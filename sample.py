@@ -3,12 +3,12 @@ from src.validation_package_cn import ValidationException, SchemaValidator, vali
 
 if __name__ == "__main__":
     schema = {
-        "age": {"type": int, "max": 120, "min": 0, "required": True},
+        "age": {"type": int, "lte": 120, "gte": 0, "required": True},
         "name": {"type": str, "min_length": 3, "required": True},
         "email": {"type": str, "regex": r"^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$", "required": True},
         "status": {"type": str, "in": ["active", "inactive"], "required": True},
-        "uploaded_file": {"required": True, "file_extension": [".pdf", ".docx", ".txt"]}
-        # "event_date": {"datetime": {"before_or_equals": datetime.now().strftime("%Y-%m-%d")}}
+        "uploaded_file": {"required": True, "file_extension": [".pdf", ".docx", ".txt"]},
+        "event_date": {"datetime": {"format": "%Y-%m-%d %H:%M:%S", "before_or_equals": "2025-12-31 00:00:00"}}
     }
 
     data = {
